@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-pod
+#  strategy:
+#    rollingUpdate:
+#      maxSurge: "2"
+#      maxUnavailable: "1"
+#    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: spring-pod
+      annotations:
+        # Standard Prometheus scrape annotations for auto-discovery
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8084"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/management/prometheus"
+        # The secrets-hash annotation is not easily translated to static YAML
+        # and is usually handled dynamically by tools like Terraform or Helm.
+    spec:
+      containers:
+        - name: spring-app-container
+          # Replace these variables with your actual image path
+          image: "2016mehrab/spring-tasker:0.0.1-SNAPSHOT"
+          ports:
+            - containerPort: 8084
+          env:
+            - name: pod_name
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          envFrom:
+            - secretRef:
+                name: spring-secret
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

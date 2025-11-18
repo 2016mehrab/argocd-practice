@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spring-tasker-monitor
+  labels:
+    # This label must match what your Prometheus Operator is watching
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: spring-pod
+  endpoints:
+    - port: http-metrics # Must match the 'name' field in your Service's port definition
+      path: /management/prometheus # Matches the path exposed by Spring Boot Actuator
+      interval: 15s
