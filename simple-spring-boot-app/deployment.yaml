@@ -3,15 +3,15 @@ kind: Deployment
 metadata:
   name: spring-tasker-deployment
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: spring-pod
-#  strategy:
-#    rollingUpdate:
-#      maxSurge: "2"
-#      maxUnavailable: "1"
-#    type: RollingUpdate
+      #  strategy:
+      #    rollingUpdate:
+      #      maxSurge: "2"
+      #      maxUnavailable: "1"
+      #    type: RollingUpdate
   template:
     metadata:
       labels:
